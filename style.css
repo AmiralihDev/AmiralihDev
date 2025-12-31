@@ -1,0 +1,314 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0f172a;
+    color: #f8fafc;
+    font-family: Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    position: relative;
+}
+
+/* افکت spotlight زیر موس */
+.cursor-light {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0.05) 30%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    transition: opacity 0.3s ease;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    max-width: 90%;
+    z-index: 2;
+    position: relative;
+}
+
+/* ======= مخزن حروف ======= */
+.letter-pile {
+    position: absolute;
+    left: -150px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 80px;
+    height: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+}
+
+.pile-letter {
+    font-size: 1.5rem;
+    color: #38bdf8;
+    opacity: 0.6;
+    transform: rotate(var(--pile-rotate, 0deg));
+    transition: all 0.3s ease;
+}
+
+.pile-letter:nth-child(1) { --pile-rotate: 15deg; }
+.pile-letter:nth-child(2) { --pile-rotate: -20deg; }
+.pile-letter:nth-child(3) { --pile-rotate: 25deg; }
+.pile-letter:nth-child(4) { --pile-rotate: -10deg; }
+.pile-letter:nth-child(5) { --pile-rotate: 30deg; }
+.pile-letter:nth-child(6) { --pile-rotate: -25deg; }
+.pile-letter:nth-child(7) { --pile-rotate: 15deg; }
+.pile-letter:nth-child(8) { --pile-rotate: -30deg; }
+.pile-letter:nth-child(9) { --pile-rotate: 20deg; }
+.pile-letter:nth-child(10) { --pile-rotate: -15deg; }
+.pile-letter:nth-child(11) { --pile-rotate: 25deg; }
+.pile-letter:nth-child(12) { --pile-rotate: -20deg; }
+.pile-letter:nth-child(13) { --pile-rotate: 10deg; }
+
+.pile-letter.taken {
+    opacity: 0;
+    transform: scale(0);
+}
+
+/* ======= جای حروف ======= */
+.title-wrapper {
+    position: relative;
+    display: inline-block;
+    direction: ltr;
+}
+
+h1 {
+    font-size: 3rem;
+    margin: 0;
+    letter-spacing: -1px;
+    color: #38bdf8;
+}
+
+h1:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.5));
+}
+
+/* اسلات خالی برای حروف */
+.letter-slot {
+    display: inline-block;
+    min-width: 0.6em;
+    min-height: 1em;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.letter-slot.filled {
+    opacity: 1;
+    background: linear-gradient(to right, #38bdf8, #818cf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.letter-slot.fixed {
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4));
+}
+
+/* ======= کارگر ======= */
+.worker-container {
+    position: absolute;
+    bottom: -70px;
+    left: -150px; /* شروع از مخزن */
+    width: calc(100% + 150px);
+    height: 80px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.worker {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    height: 50px;
+    transition: left 1s ease-in-out;
+}
+
+.worker.hidden {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* حرف تو دست کارگر */
+.carried-letter {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    color: #38bdf8;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.carried-letter.visible {
+    opacity: 1;
+}
+
+.carried-letter.lifting {
+    top: -45px;
+    transform: translateX(-50%) scale(1.1);
+}
+
+/* بدنه کارگر */
+.worker-body {
+    position: absolute;
+    bottom: 12px;
+    left: 5px;
+    width: 20px;
+    height: 28px;
+    background: linear-gradient(to bottom, #f97316, #ea580c);
+    border-radius: 8px 8px 4px 4px;
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+    animation: bodyBob 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes bodyBob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-3px); }
+}
+
+/* سر و کلاه */
+.worker-head {
+    position: absolute;
+    bottom: 40px;
+    left: 6px;
+    width: 18px;
+    height: 18px;
+    background: #fef3c7;
+    border-radius: 50%;
+    animation: bodyBob 0.4s ease-in-out infinite alternate;
+}
+
+.worker-head::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -2px;
+    width: 22px;
+    height: 12px;
+    background: linear-gradient(to bottom, #fcd34d, #fbbf24);
+    border-radius: 12px 12px 4px 4px;
+}
+
+.worker-head::after {
+    content: '• •';
+    position: absolute;
+    top: 4px;
+    left: 2px;
+    font-size: 8px;
+    color: #1e293b;
+    letter-spacing: 2px;
+}
+
+/* دست‌ها */
+.worker-arm-left,
+.worker-arm-right {
+    position: absolute;
+    bottom: 22px;
+    width: 6px;
+    height: 18px;
+    background: #f97316;
+    border-radius: 3px;
+    transform-origin: top center;
+    transition: transform 0.3s ease;
+}
+
+.worker-arm-left { left: -2px; }
+.worker-arm-right { right: 2px; }
+
+/* دست‌ها موقع راه رفتن تاب می‌خورن */
+.worker.walking .worker-arm-left {
+    animation: armSwingLeft 0.4s ease-in-out infinite alternate;
+}
+.worker.walking .worker-arm-right {
+    animation: armSwingRight 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes armSwingLeft {
+    from { transform: rotate(-20deg); }
+    to { transform: rotate(20deg); }
+}
+
+@keyframes armSwingRight {
+    from { transform: rotate(20deg); }
+    to { transform: rotate(-20deg); }
+}
+
+/* پاها */
+.worker-leg-left,
+.worker-leg-right {
+    position: absolute;
+    bottom: 0;
+    width: 6px;
+    height: 12px;
+    background: #64748b;
+    border-radius: 0 0 3px 3px;
+}
+
+.worker-leg-left { left: 7px; }
+.worker-leg-right { right: 7px; }
+
+/* پاها فقط موقع راه رفتن تکون می‌خورن */
+.worker.walking .worker-leg-left {
+    animation: legWalk 0.3s linear infinite;
+}
+.worker.walking .worker-leg-right {
+    animation: legWalk 0.3s linear infinite 0.15s;
+}
+
+@keyframes legWalk {
+    0%, 100% { height: 12px; transform: translateY(0); }
+    50% { height: 8px; transform: translateY(4px); }
+}
+
+/* حالت‌های دست */
+.worker.picking .worker-arm-left,
+.worker.picking .worker-arm-right {
+    animation: none;
+    transform: rotate(40deg) translateY(5px);
+}
+
+.worker.carrying .worker-arm-left,
+.worker.carrying .worker-arm-right {
+    animation: none;
+    transform: rotate(-60deg) translateY(-10px);
+}
+
+.worker.placing .worker-arm-left,
+.worker.placing .worker-arm-right {
+    animation: none;
+    transform: rotate(-80deg) translateY(-15px);
+}
+
+.code-icon {
+    font-family: monospace;
+    color: #38bdf8;
+    margin-bottom: 20px;
+    display: block;
+    font-size: 1.5rem;
+    animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* ریسپانسیو */
+@media screen and (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    .letter-pile { left: -100px; }
+    .worker-container { left: -100px; width: calc(100% + 100px); }
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HashemiDev</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- افکت نور زیر موس -->
+    <div class="cursor-light"></div>
+
+    <div class="container">
+        <span class="code-icon">&lt;/&gt;</span>
+
+        <!-- مخزن حروف (سمت راست) -->
+        <div class="letter-pile">
+            <span class="pile-letter" data-target="0">H</span>
+            <span class="pile-letter" data-target="1">a</span>
+            <span class="pile-letter" data-target="2">s</span>
+            <span class="pile-letter" data-target="3">h</span>
+            <span class="pile-letter" data-target="4">e</span>
+            <span class="pile-letter" data-target="5">m</span>
+            <span class="pile-letter" data-target="6">i</span>
+            <span class="pile-letter" data-target="7">D</span>
+            <span class="pile-letter" data-target="8">e</span>
+            <span class="pile-letter" data-target="9">v</span>
+            <span class="pile-letter" data-target="10">.</span>
+            <span class="pile-letter" data-target="11">i</span>
+            <span class="pile-letter" data-target="12">r</span>
+        </div>
+
+        <!-- محل قرار گرفتن حروف -->
+        <div class="title-wrapper">
+            <h1>
+                <span class="letter-slot" data-index="0"></span>
+                <span class="letter-slot" data-index="1"></span>
+                <span class="letter-slot" data-index="2"></span>
+                <span class="letter-slot" data-index="3"></span>
+                <span class="letter-slot" data-index="4"></span>
+                <span class="letter-slot" data-index="5"></span>
+                <span class="letter-slot" data-index="6"></span>
+                <span class="letter-slot" data-index="7"></span>
+                <span class="letter-slot" data-index="8"></span>
+                <span class="letter-slot" data-index="9"></span>
+                <span class="letter-slot" data-index="10"></span>
+                <span class="letter-slot" data-index="11"></span>
+                <span class="letter-slot" data-index="12"></span>
+            </h1>
+
+            <!-- کارگر -->
+            <div class="worker-container">
+                <div class="worker">
+                    <div class="worker-head"></div>
+                    <div class="worker-body"></div>
+                    <div class="worker-arm-left"></div>
+                    <div class="worker-arm-right"></div>
+                    <div class="worker-leg-left"></div>
+                    <div class="worker-leg-right"></div>
+                    <!-- حرفی که تو دست کارگره -->
+                    <div class="carried-letter"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
