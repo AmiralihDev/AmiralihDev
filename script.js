@@ -40,8 +40,10 @@ const workerContainer = document.querySelector('.worker-container');
 let currentIndex = 0;
 const letters = ['H', 'a', 's', 'h', 'e', 'm', 'i', 'D', 'e', 'v', '.', 'i', 'r'];
 
+const letterPile = document.querySelector('.letter-pile'); // مخزن حروف
+
 // موقعیت مخزن (سمت چپ)
-const pilePosition = 0;
+// محاسبه موقعیت دقیق بر اساس المان‌ها انجام میشه
 
 function processNextLetter() {
     if (currentIndex >= letters.length) {
@@ -55,13 +57,20 @@ function processNextLetter() {
     const pileLetter = pileLetters[currentIndex];
     const slot = letterSlots[currentIndex];
     const letter = letters[currentIndex];
+    const wrapperRect = titleWrapper.getBoundingClientRect();
+    const pileRect = letterPile.getBoundingClientRect();
+    const workerWidth = worker.getBoundingClientRect().width;
     
-    // 1. کارگر بره پیش مخزن (راه رفتن)
-    worker.classList.add('walking');
-    worker.style.left = pilePosition + 'px';
+    // محاسبه موقعیت دقیق مخزن نسبت به wrapper (وسط در وسط)
+    const pileLeft = pileRect.left - wrapperRect.left + (pileRect.width / 2) - (workerWidth / 2);
+
+    // 1. کارگر بره پیش مخزن (راه رفتن به چپ)
+    worker.classList.add('walking', 'flipped'); // چرخش به چپ
+    // حرکت به موقعیت مخزن
+    workerContainer.style.left = pileLeft + 'px';
     
     setTimeout(() => {
-        // 2. رسید - بایسته و حرف رو برداره
+        // 2. رسید - حرف رو برداره
         worker.classList.remove('walking');
         worker.classList.add('picking');
         
@@ -71,22 +80,26 @@ function processNextLetter() {
             carriedLetter.textContent = letter;
             carriedLetter.classList.add('visible');
             
-            worker.classList.remove('picking');
+            worker.classList.remove('picking', 'flipped'); // چرخش به راست
             worker.classList.add('carrying');
             carriedLetter.classList.add('lifting');
             
-            // 3. کارگر بره سر جای حرف (راه رفتن)
+            // 3. کارگر بره سر جای حرف (راه رفتن به راست)
             const slotRect = slot.getBoundingClientRect();
-            const containerRect = workerContainer.getBoundingClientRect();
-            const targetLeft = slotRect.left - containerRect.left + (slotRect.width / 2) - 15;
+            // محاسبه موقعیت دقیق اسلات نسبت به wrapper
+            // از اونجایی که کارگر flip میشه، محورش عوض نمیشه ولی نیازه دقیق سنتر بشه
+            // برای حالت راست، اوریجین سمت چپه معمولاً. ولی ما left کانتینر رو ست میکنیم.
+            // بیایم وسط اسلات رو بگیریم و نصف کارگر رو کم کنیم
+            const targetLeft = slotRect.left - wrapperRect.left + (slotRect.width / 2) - (workerWidth / 2);
             
             setTimeout(() => {
-                worker.classList.add('walking');
-                worker.style.left = targetLeft + 'px';
+                worker.classList.add('walking'); // راه رفتن بدون flip (به راست)
+                workerContainer.style.left = targetLeft + 'px';
                 
-                // 4. کارگر رسید - بایسته و حرف رو بذاره
+                // 4. کارگر رسید - حرف رو بذاره
                 setTimeout(() => {
-                    worker.classList.remove('walking', 'carrying');
+                    worker.classList.remove('walking');
+                    worker.classList.remove('carrying');
                     worker.classList.add('placing');
                     
                     // حرف گذاشته شد
@@ -108,17 +121,35 @@ function processNextLetter() {
                         
                     }, 300);
                     
-                }, 800); // زمان رسیدن به جای حرف
+                }, 1200); // زمان رسیدن به جای حرف
                 
             }, 200);
             
         }, 400);
         
-    }, 600); // زمان رسیدن به مخزن
+    }, 1200); // زمان رسیدن به مخزن
 }
 
 // شروع
 document.addEventListener('DOMContentLoaded', () => {
-    worker.style.left = pilePosition + 'px';
+    const wrapperRect = titleWrapper.getBoundingClientRect();
+    const pileRect = letterPile.getBoundingClientRect();
+    const workerWidth = worker.getBoundingClientRect().width;
+    const pileLeft = pileRect.left - wrapperRect.left + (pileRect.width / 2) - (workerWidth / 2);
+    
+    workerContainer.style.left = pileLeft + 'px';
     setTimeout(processNextLetter, 1000);
+});
+
+// آپدیت پوزیشن در صورت تغییر سایز صفحه
+window.addEventListener('resize', () => {
+    // فقط متفیرهای کمکی رو آپدیت می‌کنیم، خود انیمیشن تو سیکل بعدی درست میشه
+    // ولی اگر کارگر بیکار باشه (start) بهتره جاش رو درست کنیم
+    if (currentIndex === 0 && !worker.classList.contains('walking')) {
+        const wrapperRect = titleWrapper.getBoundingClientRect();
+        const pileRect = letterPile.getBoundingClientRect();
+        const workerWidth = worker.getBoundingClientRect().width;
+        const pileLeft = pileRect.left - wrapperRect.left + (pileRect.width / 2) - (workerWidth / 2);
+        workerContainer.style.left = pileLeft + 'px';
+    }
 });

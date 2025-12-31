@@ -34,19 +34,22 @@ body {
 }
 
 /* ======= مخزن حروف ======= */
+/* ======= مخزن حروف ======= */
 .letter-pile {
     position: absolute;
-    left: -150px;
+    left: -110px; /* نزدیک‌تر به وسط */
     top: 50%;
-    transform: translateY(-50%);
-    width: 80px;
-    height: 100px;
+    transform: translateY(-50%) scale(0.9); /* کمی کوچک‌تر */
+    width: 70px;
+    height: 90px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 2px;
 }
+
+
 
 .pile-letter {
     font-size: 1.5rem;
@@ -83,16 +86,13 @@ body {
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 2.5rem;
     margin: 0;
     letter-spacing: -1px;
     color: #38bdf8;
 }
 
-h1:hover {
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.5));
-}
+
 
 /* اسلات خالی برای حروف */
 .letter-slot {
@@ -115,24 +115,30 @@ h1:hover {
     filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4));
 }
 
-/* ======= کارگر ======= */
+/* ======= کارگر با جزئیات ======= */
 .worker-container {
     position: absolute;
     bottom: -70px;
-    left: -150px; /* شروع از مخزن */
-    width: calc(100% + 150px);
-    height: 80px;
+    left: -110px;
+    width: calc(100% + 110px);
+    height: 90px;
     pointer-events: none;
     z-index: 10;
+    transition: left 1.2s ease-in-out; /* حرکت نرم */
 }
 
 .worker {
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 30px;
-    height: 50px;
-    transition: left 1s ease-in-out;
+    width: 45px;
+    height: 70px;
+    transition: transform 0.3s ease; /* برای چرخش نرم */
+}
+
+/* چرخش کاراکتر به چپ */
+.worker.flipped {
+    transform: scaleX(-1);
 }
 
 .worker.hidden {
@@ -140,16 +146,268 @@ h1:hover {
     transition: opacity 0.5s ease;
 }
 
-/* حرف تو دست کارگر */
-.carried-letter {
+/* ===== کلاه ایمنی ===== */
+.worker-helmet {
     position: absolute;
-    top: -25px;
+    bottom: 52px;
+    left: 8px;
+    width: 34px;
+    height: 18px;
+    background: linear-gradient(to bottom, #fde047, #facc15, #eab308);
+    border-radius: 20px 20px 5px 5px;
+    box-shadow: 
+        inset 0 5px 10px rgba(255,255,255,0.4),
+        0 2px 5px rgba(0,0,0,0.2);
+    animation: headBob 0.4s ease-in-out infinite alternate;
+}
+
+/* نوار کلاه */
+.worker-helmet::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: #1e293b;
+    border-radius: 0 0 3px 3px;
+}
+
+/* چراغ کلاه */
+.worker-helmet::after {
+    content: '';
+    position: absolute;
+    top: 3px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 2rem;
+    width: 8px;
+    height: 6px;
+    background: radial-gradient(circle, #fef9c3, #fef08a);
+    border-radius: 3px;
+    box-shadow: 0 0 8px #fef08a;
+}
+
+@keyframes headBob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-2px); }
+}
+
+/* ===== سر و صورت ===== */
+.worker-head {
+    position: absolute;
+    bottom: 38px;
+    left: 12px;
+    width: 26px;
+    height: 22px;
+    background: linear-gradient(to bottom, #fef3c7, #fde68a);
+    border-radius: 12px 12px 8px 8px;
+    animation: headBob 0.4s ease-in-out infinite alternate;
+}
+
+/* چشم‌ها */
+.worker-eye {
+    position: absolute;
+    top: 6px;
+    width: 6px;
+    height: 6px;
+    background: #1e293b;
+    border-radius: 50%;
+}
+
+.worker-eye.left { left: 5px; }
+.worker-eye.right { right: 5px; }
+
+/* مردمک چشم */
+.worker-eye::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+}
+
+/* لبخند */
+.worker-smile {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 5px;
+    border: 2px solid #92400e;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+}
+
+/* ===== بدنه و لباس ===== */
+.worker-body {
+    position: absolute;
+    bottom: 15px;
+    left: 10px;
+    width: 30px;
+    height: 28px;
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    border-radius: 8px 8px 5px 5px;
+    box-shadow: 
+        inset 2px 0 5px rgba(255,255,255,0.2),
+        2px 2px 5px rgba(0,0,0,0.2);
+    animation: bodyBob 0.4s ease-in-out infinite alternate;
+}
+
+/* یقه لباس */
+.worker-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 8px;
+    background: #1e3a8a;
+    border-radius: 0 0 6px 6px;
+}
+
+/* نوار بازتابنده روی لباس */
+.worker-body::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 2px;
+    right: 2px;
+    height: 4px;
+    background: linear-gradient(90deg, #fef08a, #fde047, #fef08a);
+    border-radius: 2px;
+}
+
+/* کمربند ابزار */
+.worker-belt {
+    position: absolute;
+    bottom: 5px;
+    left: -2px;
+    width: 34px;
+    height: 6px;
+    background: #78350f;
+    border-radius: 2px;
+}
+
+.worker-belt::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 5px;
+    width: 5px;
+    height: 4px;
+    background: #fbbf24;
+    border-radius: 1px;
+}
+
+.worker-belt::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    right: 5px;
+    width: 5px;
+    height: 4px;
+    background: #64748b;
+    border-radius: 1px;
+}
+
+@keyframes bodyBob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-2px); }
+}
+
+/* ===== دست‌ها ===== */
+.worker-arm {
+    position: absolute;
+    bottom: 22px;
+    width: 8px;
+    height: 22px;
+    background: linear-gradient(to bottom, #f97316, #ea580c);
+    border-radius: 4px;
+    transform-origin: top center;
+    transition: transform 0.3s ease;
+}
+
+.worker-arm.left { left: 2px; }
+.worker-arm.right { right: 2px; }
+
+/* دستکش‌ها */
+.worker-hand {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 8px;
+    background: linear-gradient(to bottom, #fbbf24, #f59e0b);
+    border-radius: 3px 3px 5px 5px;
+}
+
+/* انگشت‌ها */
+.worker-hand::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 1px;
+    width: 2px;
+    height: 3px;
+    background: #fbbf24;
+    border-radius: 1px;
+    box-shadow: 3px 0 0 #fbbf24, 6px 0 0 #fbbf24;
+}
+
+/* ===== پاها ===== */
+.worker-leg {
+    position: absolute;
+    bottom: 5px;
+    width: 10px;
+    height: 15px;
+    background: #1e3a8a;
+    border-radius: 3px 3px 0 0;
+}
+
+.worker-leg.left { left: 12px; }
+.worker-leg.right { right: 12px; }
+
+/* کفش‌های ایمنی */
+.worker-shoe {
+    position: absolute;
+    bottom: -6px;
+    left: -2px;
+    width: 14px;
+    height: 8px;
+    background: linear-gradient(to bottom, #1e293b, #0f172a);
+    border-radius: 3px 8px 3px 3px;
+}
+
+/* نوک کفش */
+.worker-shoe::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 0;
+    width: 5px;
+    height: 4px;
+    background: #334155;
+    border-radius: 0 3px 3px 0;
+}
+
+/* حرف تو دست */
+.carried-letter {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.8rem;
+    font-weight: bold;
     color: #38bdf8;
     opacity: 0;
     transition: all 0.3s ease;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 .carried-letter.visible {
@@ -157,139 +415,165 @@ h1:hover {
 }
 
 .carried-letter.lifting {
-    top: -45px;
+    top: -15px;
     transform: translateX(-50%) scale(1.1);
 }
 
-/* بدنه کارگر */
-.worker-body {
-    position: absolute;
-    bottom: 12px;
-    left: 5px;
-    width: 20px;
-    height: 28px;
-    background: linear-gradient(to bottom, #f97316, #ea580c);
-    border-radius: 8px 8px 4px 4px;
-    box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
-    animation: bodyBob 0.4s ease-in-out infinite alternate;
+/* ===== انیمیشن‌های راه رفتن ===== */
+
+/* بدنه کمی به جلو خم می‌شه موقع راه رفتن */
+.worker.walking .worker-body {
+    animation: walkBodyLean 0.3s ease-in-out infinite alternate;
 }
 
-@keyframes bodyBob {
-    from { transform: translateY(0); }
-    to { transform: translateY(-3px); }
+@keyframes walkBodyLean {
+    from { transform: translateY(0) rotate(-2deg); }
+    to { transform: translateY(-2px) rotate(2deg); }
 }
 
-/* سر و کلاه */
-.worker-head {
-    position: absolute;
-    bottom: 40px;
-    left: 6px;
-    width: 18px;
-    height: 18px;
-    background: #fef3c7;
-    border-radius: 50%;
-    animation: bodyBob 0.4s ease-in-out infinite alternate;
+/* سر هم تکون می‌خوره */
+.worker.walking .worker-head,
+.worker.walking .worker-helmet {
+    animation: walkHeadBob 0.3s ease-in-out infinite alternate;
 }
 
-.worker-head::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: -2px;
-    width: 22px;
-    height: 12px;
-    background: linear-gradient(to bottom, #fcd34d, #fbbf24);
-    border-radius: 12px 12px 4px 4px;
+@keyframes walkHeadBob {
+    from { transform: translateY(0) translateX(-1px); }
+    to { transform: translateY(-3px) translateX(1px); }
 }
 
-.worker-head::after {
-    content: '• •';
-    position: absolute;
-    top: 4px;
-    left: 2px;
-    font-size: 8px;
-    color: #1e293b;
-    letter-spacing: 2px;
+/* دست‌ها با حرکت طبیعی‌تر */
+.worker.walking .worker-arm.left {
+    animation: armSwingLeft 0.35s ease-in-out infinite alternate;
 }
-
-/* دست‌ها */
-.worker-arm-left,
-.worker-arm-right {
-    position: absolute;
-    bottom: 22px;
-    width: 6px;
-    height: 18px;
-    background: #f97316;
-    border-radius: 3px;
-    transform-origin: top center;
-    transition: transform 0.3s ease;
-}
-
-.worker-arm-left { left: -2px; }
-.worker-arm-right { right: 2px; }
-
-/* دست‌ها موقع راه رفتن تاب می‌خورن */
-.worker.walking .worker-arm-left {
-    animation: armSwingLeft 0.4s ease-in-out infinite alternate;
-}
-.worker.walking .worker-arm-right {
-    animation: armSwingRight 0.4s ease-in-out infinite alternate;
+.worker.walking .worker-arm.right {
+    animation: armSwingRight 0.35s ease-in-out infinite alternate;
 }
 
 @keyframes armSwingLeft {
-    from { transform: rotate(-20deg); }
-    to { transform: rotate(20deg); }
+    0% { transform: rotate(-30deg) translateX(2px); }
+    100% { transform: rotate(30deg) translateX(-2px); }
 }
 
 @keyframes armSwingRight {
-    from { transform: rotate(20deg); }
-    to { transform: rotate(-20deg); }
+    0% { transform: rotate(30deg) translateX(-2px); }
+    100% { transform: rotate(-30deg) translateX(2px); }
 }
 
-/* پاها */
-.worker-leg-left,
-.worker-leg-right {
-    position: absolute;
-    bottom: 0;
-    width: 6px;
-    height: 12px;
-    background: #64748b;
-    border-radius: 0 0 3px 3px;
+/* پاها با خم شدن زانو */
+.worker.walking .worker-leg.left {
+    animation: legWalkLeft 0.3s ease-in-out infinite;
+}
+.worker.walking .worker-leg.right {
+    animation: legWalkRight 0.3s ease-in-out infinite;
 }
 
-.worker-leg-left { left: 7px; }
-.worker-leg-right { right: 7px; }
-
-/* پاها فقط موقع راه رفتن تکون می‌خورن */
-.worker.walking .worker-leg-left {
-    animation: legWalk 0.3s linear infinite;
-}
-.worker.walking .worker-leg-right {
-    animation: legWalk 0.3s linear infinite 0.15s;
+@keyframes legWalkLeft {
+    0% { transform: translateY(0) rotate(-20deg); }
+    25% { transform: translateY(-5px) rotate(-30deg); } /* زانو بالا */
+    50% { transform: translateY(0) rotate(0deg); }
+    75% { transform: translateY(2px) rotate(15deg); }
+    100% { transform: translateY(0) rotate(-20deg); }
 }
 
-@keyframes legWalk {
-    0%, 100% { height: 12px; transform: translateY(0); }
-    50% { height: 8px; transform: translateY(4px); }
+@keyframes legWalkRight {
+    0% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(2px) rotate(15deg); }
+    50% { transform: translateY(0) rotate(-20deg); }
+    75% { transform: translateY(-5px) rotate(-30deg); } /* زانو بالا */
+    100% { transform: translateY(0) rotate(0deg); }
 }
 
-/* حالت‌های دست */
-.worker.picking .worker-arm-left,
-.worker.picking .worker-arm-right {
+/* ===== حالت برداشتن - خم شدن ===== */
+.worker.picking {
+    transform: translateY(5px); /* کل بدن پایین میره */
+}
+
+.worker.picking .worker-body {
     animation: none;
-    transform: rotate(40deg) translateY(5px);
+    transform: rotate(15deg); /* خم شدن به جلو */
 }
 
-.worker.carrying .worker-arm-left,
-.worker.carrying .worker-arm-right {
+.worker.picking .worker-head,
+.worker.picking .worker-helmet {
     animation: none;
-    transform: rotate(-60deg) translateY(-10px);
+    transform: translateY(3px) rotate(10deg); /* نگاه به پایین */
 }
 
-.worker.placing .worker-arm-left,
-.worker.placing .worker-arm-right {
+.worker.picking .worker-arm {
+    animation: pickingArms 0.4s ease-in-out;
+}
+
+@keyframes pickingArms {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(50deg) translateY(10px); } /* دست‌ها پایین */
+    100% { transform: rotate(40deg) translateY(8px); }
+}
+
+.worker.picking .worker-leg {
     animation: none;
-    transform: rotate(-80deg) translateY(-15px);
+    transform: rotate(10deg); /* کمی خم */
+}
+
+/* ===== حالت حمل - دست‌ها بالا ===== */
+.worker.carrying .worker-body {
+    animation: carryBodySway 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes carryBodySway {
+    from { transform: translateY(0); }
+    to { transform: translateY(-2px); }
+}
+
+.worker.carrying .worker-arm {
+    animation: carryArms 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes carryArms {
+    0% { transform: rotate(-65deg) translateY(-8px); }
+    100% { transform: rotate(-70deg) translateY(-10px); }
+}
+
+.worker.carrying .worker-head,
+.worker.carrying .worker-helmet {
+    animation: carryHeadLook 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes carryHeadLook {
+    from { transform: translateY(-2px) rotate(-5deg); } /* نگاه به بالا */
+    to { transform: translateY(-1px) rotate(0deg); }
+}
+
+/* ===== حالت گذاشتن ===== */
+.worker.placing {
+    transform: translateY(-3px); /* کمی بالا */
+}
+
+.worker.placing .worker-body {
+    animation: none;
+    transform: translateY(-2px);
+}
+
+.worker.placing .worker-arm {
+    animation: placeArms 0.5s ease forwards;
+}
+
+@keyframes placeArms {
+    0% { transform: rotate(-70deg) translateY(-10px); }
+    40% { transform: rotate(-90deg) translateY(-15px); } /* کشیدن بالا */
+    70% { transform: rotate(-85deg) translateY(-12px); } /* چسباندن */
+    100% { transform: rotate(-80deg) translateY(-10px); }
+}
+
+.worker.placing .worker-head,
+.worker.placing .worker-helmet {
+    animation: placeHeadUp 0.5s ease forwards;
+}
+
+@keyframes placeHeadUp {
+    0% { transform: rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(-10deg); } /* نگاه به بالا */
+    100% { transform: translateY(-3px) rotate(-5deg); }
 }
 
 .code-icon {
@@ -307,8 +591,58 @@ h1:hover {
 }
 
 /* ریسپانسیو */
+@media screen and (max-width: 1024px) {
+    h1 { font-size: 2.2rem; }
+    .letter-pile { left: -90px; }
+    .worker-container { left: -90px; width: calc(100% + 90px); }
+}
+
 @media screen and (max-width: 768px) {
-    h1 { font-size: 2rem; }
-    .letter-pile { left: -100px; }
-    .worker-container { left: -100px; width: calc(100% + 100px); }
+    h1 { font-size: 1.8rem; }
+    
+    .container {
+        padding: 40px 10px;
+    }
+
+    .letter-pile {
+        left: -70px;
+        transform: translateY(-50%) scale(0.75);
+    }
+
+    .worker-container {
+        left: -70px;
+        width: calc(100% + 70px);
+        bottom: -55px;
+        height: 60px;
+    }
+
+    .worker {
+        width: 38px;
+        height: 53px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    h1 { font-size: 1.2rem; }
+    
+    .letter-pile {
+        left: -50px;
+        width: 50px;
+        transform: translateY(-50%) scale(0.6);
+    }
+    
+    .worker-container {
+        left: -50px;
+        width: calc(100% + 50px);
+        bottom: -45px;
+    }
+    
+    .worker {
+        width: 32px;
+        height: 45px;
+    }
+    
+    .cursor-light {
+        display: none;
+    }
 }
